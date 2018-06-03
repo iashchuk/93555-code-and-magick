@@ -28,23 +28,34 @@ var barChart = {
   MARGIN_Y: 10,
   LINE_HEIGHT: 20,
   YOUR_COLOR: 'rgba(255, 0, 0, 1)',
-  HUE_COLOR: 244,
-  LIGHTNESS: 50,
-  getHueBlueColor: function () {
-    var saturation = Math.floor(Math.random() * 100);
-    return 'hsl(' + this.HUE_COLOR + ',' + saturation + '%,' + this.LIGHTNESS + '%)';
-  }
 };
 
+var startBarChartX = cloudParams.X + barChart.MARGIN_X;
+var startBarChartY = cloudParams.HEIGHT - barChart.MARGIN_Y;
 
-// Функция отрисовки облака
+/**
+ * Функция отрисовка облака (окна вывода сообщения)
+
+ * @param {Object} ctx
+ * @param {number} x - Расположение окна по оси Х
+ * @param {number} y - Расположеник окна по оси Y
+ * @param {string} color
+ */
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x, y, cloudParams.WIDTH, cloudParams.HEIGHT);
 };
 
-
-// Функция разделения сообщения на строки
+/**
+ * Делит получаемое сообщение на строки взависимости от заданной ширина
+ *
+ * @param {Object} ctx
+ * @param {string} text
+ * @param {number} maxWidth
+ * @param {number} lineHeight
+ * @param {number} marginLeft - Отступ слева относительно начала окна сообщения
+ * @param {number} marginTop - Отступ сверху относительно начала окна сообщения
+*/
 function getWinMessage(ctx, text, maxWidth, lineHeight, marginLeft, marginTop) {
   var words = text.split(' ');
   var line = '';
@@ -64,33 +75,39 @@ function getWinMessage(ctx, text, maxWidth, lineHeight, marginLeft, marginTop) {
   ctx.fillText(line, marginLeft + cloudParams.X, marginTop + cloudParams.Y);
 }
 
-
-// Функция поиска максимального элемента
 var getMaxElement = function (arr) {
   return Math.max.apply(null, arr);
 };
 
+var getHueBlueColor = function () {
+  return 'hsl(240,' + Math.floor(Math.random() * 100) + '%, 50%)';
+};
 
-// Функция отрисовки столбца гистограммы
+/**
+ * Функция отрисовки столбца гистограммы
+ *
+ * @param {Object} ctx
+ * @param {number} playerPoints
+ * @param {string} playerName
+ * @param {number} maxPoints - Максимально набранное количество очков в игре
+ * @param {number} numberOfBar - Номер столбца / количество столбцов (первый - 0, второй - 1)
+*/
 var renderBar = function (ctx, playerPoints, playerName, maxPoints, numberOfBar) {
-
-  var x = cloudParams.X + barChart.MARGIN_X;
-  var y = cloudParams.HEIGHT - barChart.MARGIN_Y;
   var barHeight = barChart.HEIGHT * (playerPoints / maxPoints);
   var nextBarMargin = (barChart.BAR_WIDTH + barChart.MARGIN_X) * numberOfBar;
 
   ctx.fillStyle = cloudParams.TEXT_COLOR;
-  ctx.fillText(Math.floor(playerPoints), x + nextBarMargin, y - barChart.MARGIN_Y - barChart.LINE_HEIGHT - barHeight);
+  ctx.fillText(Math.floor(playerPoints), startBarChartX + nextBarMargin, startBarChartY - barHeight - barChart.LINE_HEIGHT - barChart.MARGIN_Y);
 
-  ctx.fillStyle = barChart.getHueBlueColor();
+  ctx.fillStyle = getHueBlueColor();
   if (playerName === 'Вы') {
     ctx.fillStyle = barChart.YOUR_COLOR;
   }
 
-  ctx.fillRect(x + nextBarMargin, y - barChart.LINE_HEIGHT - barHeight, barChart.BAR_WIDTH, barHeight);
+  ctx.fillRect(startBarChartX + nextBarMargin, startBarChartY - barHeight - barChart.LINE_HEIGHT, barChart.BAR_WIDTH, barHeight);
 
   ctx.fillStyle = cloudParams.TEXT_COLOR;
-  ctx.fillText(playerName, x + nextBarMargin, y);
+  ctx.fillText(playerName, startBarChartX + nextBarMargin, startBarChartY);
 };
 
 
@@ -100,21 +117,17 @@ window.renderStatistics = function (ctx, players, times) {
   renderCloud(ctx, cloudParams.X + cloudParams.SHADOW_GAP, cloudParams.Y + cloudParams.SHADOW_GAP, cloudParams.SHADOW_COLOR);
   renderCloud(ctx, cloudParams.X, cloudParams.Y, cloudParams.COLOR);
 
-
   // Выводим сообщение о победе на экран
   ctx.font = cloudParams.TEXT_FONT;
   ctx.fillStyle = cloudParams.TEXT_COLOR;
   getWinMessage(ctx, winMessageParams.TEXT, winMessageParams.WIDTH_TEXT, winMessageParams.LINE_TEXT, winMessageParams.MARGIN_X, winMessageParams.MARGIN_Y);
 
-
   // Получаем максимальное набранное количество очков
   var maxTime = getMaxElement(times);
-
 
   // Выводим статистику игроков (гистограмму)
   for (var i = 0; i < players.length; i++) {
     renderBar(ctx, times[i], players[i], maxTime, i);
   }
-
 
 };
