@@ -34,11 +34,10 @@ var startBarChartX = cloudParams.X + barChart.MARGIN_X;
 var startBarChartY = cloudParams.HEIGHT - barChart.MARGIN_Y;
 
 /**
- * Функция отрисовка облака (окна вывода сообщения)
-
+ * Функция отрисовки облака (окна вывода сообщения)
  * @param {Object} ctx
  * @param {number} x - Расположение окна по оси Х
- * @param {number} y - Расположеник окна по оси Y
+ * @param {number} y - Расположение окна по оси Y
  * @param {string} color
  */
 var renderCloud = function (ctx, x, y, color) {
@@ -48,7 +47,6 @@ var renderCloud = function (ctx, x, y, color) {
 
 /**
  * Делит получаемое сообщение на строки взависимости от заданной ширина
- *
  * @param {Object} ctx
  * @param {string} text
  * @param {number} maxWidth
@@ -79,13 +77,13 @@ var getMaxElement = function (arr) {
   return Math.max.apply(null, arr);
 };
 
+
 var getHueBlueColor = function () {
   return 'hsl(240,' + Math.floor(Math.random() * 100) + '%, 50%)';
 };
 
 /**
  * Функция отрисовки столбца гистограммы
- *
  * @param {Object} ctx
  * @param {number} playerPoints
  * @param {string} playerName
@@ -99,11 +97,7 @@ var renderBar = function (ctx, playerPoints, playerName, maxPoints, numberOfBar)
   ctx.fillStyle = cloudParams.TEXT_COLOR;
   ctx.fillText(Math.floor(playerPoints), startBarChartX + nextBarMargin, startBarChartY - barHeight - barChart.LINE_HEIGHT - barChart.MARGIN_Y);
 
-  ctx.fillStyle = getHueBlueColor();
-  if (playerName === 'Вы') {
-    ctx.fillStyle = barChart.YOUR_COLOR;
-  }
-
+  ctx.fillStyle = playerName === 'Вы' ? barChart.YOUR_COLOR : getHueBlueColor();
   ctx.fillRect(startBarChartX + nextBarMargin, startBarChartY - barHeight - barChart.LINE_HEIGHT, barChart.BAR_WIDTH, barHeight);
 
   ctx.fillStyle = cloudParams.TEXT_COLOR;
