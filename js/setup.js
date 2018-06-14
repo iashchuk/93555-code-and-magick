@@ -46,10 +46,12 @@ var caseWizard = {
   ]
 };
 
-
 var NUMBER_WIZARDS = 4;
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
+
+var keyCodes = {
+  ESC: 27,
+  ENTER: 13
+};
 
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var setup = document.querySelector('.setup');
@@ -142,6 +144,115 @@ var renderWizard = function (wizard) {
 };
 
 /**
+ * Функция валидации поля ввода имени пользователя
+ * @param {Node} input
+ */
+var validUserInput = function (input) {
+  if (input.validity.tooShort) {
+    input.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (input.validity.tooLong) {
+    input.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (input.validity.valueMissing) {
+    input.setCustomValidity('Обязательное поле');
+  } else {
+    input.setCustomValidity('');
+  }
+};
+
+// Задание правильного имени пользователя
+var setupValidUserName = function () {
+  validUserInput(userNameInput);
+};
+
+// Сброс невалидного состояния
+var resetInvalidInput = function (evt) {
+  var target = evt.target;
+  if (target.value.length < 2) {
+    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else {
+    target.setCustomValidity('');
+  }
+};
+
+
+// Закрытие диалогового окна пользователя при нажатии ESC
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === keyCodes.ESC) {
+    closePopup();
+  }
+};
+
+// Закрытие диалогового окна пользователя при нажатии ENTER на Х
+var onPopupCloseEnterPress = function (evt) {
+  if (evt.keyCode === keyCodes.ENTER) {
+    closePopup();
+  }
+};
+
+/**
+ * Функция задания цвета элементу и значения в input
+ * @param {Node} element
+ * @param {Array.<string>} colors
+ * @param {Node} input
+ */
+var selectElementColor = function (element, colors, input) {
+  var prevColor = input.value;
+  var currentColor = getRandomElement(colors);
+
+  while (prevColor === currentColor) {
+    currentColor = getRandomElement(colors);
+  }
+
+  if (element === setupWizardFireball) {
+    element.style.background = currentColor;
+  } else {
+    element.style.fill = currentColor;
+  }
+  input.value = currentColor;
+};
+
+// Сменаа цвета плаща по клике по нему
+var wizardCoatClickHandler = function () {
+  selectElementColor(setupWizardCoat, caseWizard.COAT_COLORS, wizardCoatInput);
+};
+
+// Смена цвета глаз при клике по ним
+var wizardEyesClickHandler = function () {
+  selectElementColor(setupWizardEyes, caseWizard.EYES_COLORS, wizardEyesInput);
+};
+
+// Смена цвета файерболла при клике по нему
+var wizardFireballClickHandler = function () {
+  selectElementColor(setupWizardFireball, caseWizard.FIREBALL_COLORS, wizardFireballInput);
+};
+
+
+// Функция событий при закрытии диалогового окна
+var closePopup = function () {
+  setup.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+  setupClose.removeEventListener('keydown', onPopupCloseEnterPress);
+  setupWizardCoat.removeEventListener('click', wizardCoatClickHandler);
+  setupWizardEyes.removeEventListener('click', wizardEyesClickHandler);
+  setupWizardFireball.removeEventListener('click', wizardFireballClickHandler);
+  userNameInput.removeEventListener('click', setupValidUserName);
+  userNameInput.removeEventListener('input', resetInvalidInput);
+};
+
+// Функция событий при открытии диалогового окна
+var openPopup = function () {
+  setup.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+  setupClose.addEventListener('keydown', onPopupCloseEnterPress);
+  setupWizardCoat.addEventListener('click', wizardCoatClickHandler);
+  setupWizardEyes.addEventListener('click', wizardEyesClickHandler);
+  setupWizardFireball.addEventListener('click', wizardFireballClickHandler);
+  userNameInput.addEventListener('click', setupValidUserName);
+  userNameInput.addEventListener('input', resetInvalidInput);
+};
+
+
+/**
  * Функция инициализации страницы
  * @param {Node} fragment
  */
@@ -149,88 +260,19 @@ var initPage = function (fragment) {
   var page = document.querySelector('.setup');
   page.querySelector('.setup-similar').classList.remove('hidden');
   page.querySelector('.setup-similar-list').appendChild(fragment);
-};
 
-// Открытие(закрытие) диалогового окна пользователя
-var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    closePopup();
-  }
-};
-
-var openPopup = function () {
-  setup.classList.remove('hidden');
-  document.addEventListener('keydown', onPopupEscPress);
-};
-
-var closePopup = function () {
-  setup.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscPress);
-};
-
-setupOpen.addEventListener('click', function () {
-  openPopup();
-});
-
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
+  setupOpen.addEventListener('click', function () {
     openPopup();
-  }
-});
+  });
 
-setupClose.addEventListener('click', function () {
-  closePopup();
-});
-
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
-
-// Сценарий валидации формы при заполнении имени пользователя
-userNameInput.addEventListener('invalid', function () {
-  if (userNameInput.validity.tooShort) {
-    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else if (userNameInput.validity.tooLong) {
-    userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
-  } else if (userNameInput.validity.valueMissing) {
-    userNameInput.setCustomValidity('Обязательное поле');
-  } else {
-    userNameInput.setCustomValidity('');
-  }
-});
-
-userNameInput.addEventListener('input', function (evt) {
-  var target = evt.target;
-  if (target.value.length < 2) {
-    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else {
-    target.setCustomValidity('');
-  }
-});
-
-// Задаем цвет плаща волшебника при клике
-setupWizardCoat.addEventListener('click', function () {
-  var colorCoat = getRandomElement(caseWizard.COAT_COLORS);
-  setupWizardCoat.style.fill = colorCoat;
-  wizardCoatInput.value = colorCoat;
-});
-
-// Задаем цвет глаз волшебника при клике
-setupWizardEyes.addEventListener('click', function () {
-  var colorEyes = getRandomElement(caseWizard.EYES_COLORS);
-  setupWizardEyes.style.fill = colorEyes;
-  wizardEyesInput.value = colorEyes;
-});
-
-// Задаем цвет файерболла волшебника при клике
-setupWizardFireball.addEventListener('click', function () {
-  var colorFireball = getRandomElement(caseWizard.FIREBALL_COLORS);
-  setupWizardFireball.style.background = colorFireball;
-  wizardFireballInput.value = colorFireball;
-});
+  setupOpen.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === keyCodes.ENTER) {
+      openPopup();
+    }
+  });
+};
 
 
 // Создаем волшебников и инициализируем страницу
 initPage(createWizards(caseWizard, NUMBER_WIZARDS));
+
