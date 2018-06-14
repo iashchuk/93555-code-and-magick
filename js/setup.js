@@ -174,6 +174,10 @@ var resetInvalidInput = function (evt) {
   }
 };
 
+// Закрытие диалогового окна пользователя при клике на Х
+var onPopupCloseClick = function () {
+  closePopup();
+};
 
 // Закрытие диалогового окна пользователя при нажатии ESC
 var onPopupEscPress = function (evt) {
@@ -230,6 +234,7 @@ var wizardFireballClickHandler = function () {
 // Функция событий при закрытии диалогового окна
 var closePopup = function () {
   setup.classList.add('hidden');
+  setupClose.removeEventListener('click', onPopupCloseClick);
   document.removeEventListener('keydown', onPopupEscPress);
   setupClose.removeEventListener('keydown', onPopupCloseEnterPress);
   setupWizardCoat.removeEventListener('click', wizardCoatClickHandler);
@@ -242,6 +247,7 @@ var closePopup = function () {
 // Функция событий при открытии диалогового окна
 var openPopup = function () {
   setup.classList.remove('hidden');
+  setupClose.addEventListener('click', onPopupCloseClick);
   document.addEventListener('keydown', onPopupEscPress);
   setupClose.addEventListener('keydown', onPopupCloseEnterPress);
   setupWizardCoat.addEventListener('click', wizardCoatClickHandler);
