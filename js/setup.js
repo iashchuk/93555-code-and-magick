@@ -36,14 +36,50 @@ var caseWizard = {
     'blue',
     'yellow',
     'green'
+  ],
+  FIREBALL_COLORS: [
+    '#ee4830',
+    '#30a8ee',
+    '#5ce6c0',
+    '#e848d5',
+    '#e6e848'
   ]
 };
 
-
 var NUMBER_WIZARDS = 4;
 
-var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+var keyCodes = {
+  ESC: 27,
+  ENTER: 13
+};
 
+var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+var setup = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setup.querySelector('.setup-close');
+var setupWizardCoat = setup.querySelector('.wizard-coat');
+var wizardCoatInput = setup.querySelector('[name=coat-color]');
+var setupWizardEyes = setup.querySelector('.wizard-eyes');
+var wizardEyesInput = setup.querySelector('[name=eyes-color]');
+var setupWizardFireball = setup.querySelector('.setup-fireball-wrap');
+var wizardFireballInput = setupWizardFireball.querySelector('[name=fireball-color]');
+var userNameInput = setup.querySelector('.setup-user-name');
+
+/**
+ * Функция получения случайного элемента массива
+ * @param {Array} arrayElements
+ * @return {*}
+ */
+var getRandomElement = function (arrayElements) {
+  var index = Math.floor(Math.random() * arrayElements.length);
+  return arrayElements[index];
+};
+
+/**
+ * Функция тасования массива по алгоритму Фишера-Йетса
+ * @param {Array} arrayElements
+ * @return {Array}
+ */
 var shuffleElements = function (arrayElements) {
   for (var i = arrayElements.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
@@ -108,16 +144,141 @@ var renderWizard = function (wizard) {
 };
 
 /**
+ * Функция валидации поля ввода имени пользователя
+ * @param {Node} input
+ */
+var validUserInput = function (input) {
+  if (input.validity.tooShort) {
+    input.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (input.validity.tooLong) {
+    input.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (input.validity.valueMissing) {
+    input.setCustomValidity('Обязательное поле');
+  } else {
+    input.setCustomValidity('');
+  }
+};
+
+// Задание правильного имени пользователя
+var setupValidUserName = function () {
+  validUserInput(userNameInput);
+};
+
+// Сброс невалидного состояния
+var resetInvalidInput = function (evt) {
+  var target = evt.target;
+  if (target.value.length < 2) {
+    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else {
+    target.setCustomValidity('');
+  }
+};
+
+// Закрытие диалогового окна пользователя при клике на Х
+var onPopupCloseClick = function () {
+  closePopup();
+};
+
+// Закрытие диалогового окна пользователя при нажатии ESC
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === keyCodes.ESC) {
+    closePopup();
+  }
+};
+
+// Закрытие диалогового окна пользователя при нажатии ENTER на Х
+var onPopupCloseEnterPress = function (evt) {
+  if (evt.keyCode === keyCodes.ENTER) {
+    closePopup();
+  }
+};
+
+/**
+ * Функция задания цвета элементу и значения в input
+ * @param {Node} element
+ * @param {Array.<string>} colors
+ * @param {Node} input
+ */
+var selectElementColor = function (element, colors, input) {
+  var prevColor = input.value;
+  var currentColor = getRandomElement(colors);
+
+  while (prevColor === currentColor) {
+    currentColor = getRandomElement(colors);
+  }
+
+  if (element === setupWizardFireball) {
+    element.style.background = currentColor;
+  } else {
+    element.style.fill = currentColor;
+  }
+  input.value = currentColor;
+};
+
+// Сменаа цвета плаща по клике по нему
+var wizardCoatClickHandler = function () {
+  selectElementColor(setupWizardCoat, caseWizard.COAT_COLORS, wizardCoatInput);
+};
+
+// Смена цвета глаз при клике по ним
+var wizardEyesClickHandler = function () {
+  selectElementColor(setupWizardEyes, caseWizard.EYES_COLORS, wizardEyesInput);
+};
+
+// Смена цвета файерболла при клике по нему
+var wizardFireballClickHandler = function () {
+  selectElementColor(setupWizardFireball, caseWizard.FIREBALL_COLORS, wizardFireballInput);
+};
+
+
+// Функция событий при закрытии диалогового окна
+var closePopup = function () {
+  setup.classList.add('hidden');
+  setupClose.removeEventListener('click', onPopupCloseClick);
+  document.removeEventListener('keydown', onPopupEscPress);
+  setupClose.removeEventListener('keydown', onPopupCloseEnterPress);
+  setupWizardCoat.removeEventListener('click', wizardCoatClickHandler);
+  setupWizardEyes.removeEventListener('click', wizardEyesClickHandler);
+  setupWizardFireball.removeEventListener('click', wizardFireballClickHandler);
+  userNameInput.removeEventListener('click', setupValidUserName);
+  userNameInput.removeEventListener('input', resetInvalidInput);
+};
+
+// Функция событий при открытии диалогового окна
+var openPopup = function () {
+  setup.classList.remove('hidden');
+  setupClose.addEventListener('click', onPopupCloseClick);
+  document.addEventListener('keydown', onPopupEscPress);
+  setupClose.addEventListener('keydown', onPopupCloseEnterPress);
+  setupWizardCoat.addEventListener('click', wizardCoatClickHandler);
+  setupWizardEyes.addEventListener('click', wizardEyesClickHandler);
+  setupWizardFireball.addEventListener('click', wizardFireballClickHandler);
+  userNameInput.addEventListener('click', setupValidUserName);
+  userNameInput.addEventListener('input', resetInvalidInput);
+};
+
+
+/**
  * Функция инициализации страницы
  * @param {Node} fragment
  */
 var initPage = function (fragment) {
   var page = document.querySelector('.setup');
-  page.classList.remove('hidden');
   page.querySelector('.setup-similar').classList.remove('hidden');
   page.querySelector('.setup-similar-list').appendChild(fragment);
+
+  setupOpen.addEventListener('click', function () {
+    openPopup();
+  });
+
+  setupOpen.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === keyCodes.ENTER) {
+      openPopup();
+    }
+  });
 };
 
 
 // Создаем волшебников и инициализируем страницу
 initPage(createWizards(caseWizard, NUMBER_WIZARDS));
+
