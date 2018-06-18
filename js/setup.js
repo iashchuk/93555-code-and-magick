@@ -242,6 +242,7 @@ var closePopup = function () {
   setupWizardFireball.removeEventListener('click', wizardFireballClickHandler);
   userNameInput.removeEventListener('click', setupValidUserName);
   userNameInput.removeEventListener('input', resetInvalidInput);
+  setup.style = null;
 };
 
 // Функция событий при открытии диалогового окна
