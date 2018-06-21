@@ -35,17 +35,20 @@
     }
   };
 
+  var initForm = function () {
+    userNameInput.addEventListener('click', setupValidUserName);
+    userNameInput.addEventListener('input', resetInvalidInput);
+  };
+
+  var deactivateForm = function () {
+    userNameInput.removeEventListener('click', setupValidUserName);
+    userNameInput.removeEventListener('input', resetInvalidInput);
+  };
+
 
   window.form = {
-    init: function () {
-      userNameInput.addEventListener('click', setupValidUserName);
-      userNameInput.addEventListener('input', resetInvalidInput);
-    },
-
-    deactivate: function () {
-      userNameInput.removeEventListener('click', setupValidUserName);
-      userNameInput.removeEventListener('input', resetInvalidInput);
-    }
+    init: initForm,
+    deactivate: deactivateForm
   };
 
 })();
