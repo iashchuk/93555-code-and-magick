@@ -157,8 +157,8 @@
 
   window.wizard = {
     create: createWizards(caseWizard, NUMBER_WIZARDS),
-    initChangeColor: initChangeColor,
-    deactivateChangeColor: deactivateChangeColor
+    setHandlers: initChangeColor,
+    removeHandlers: deactivateChangeColor
   };
 
 })();

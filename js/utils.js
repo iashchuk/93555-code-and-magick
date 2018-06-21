@@ -3,26 +3,6 @@
 (function () {
 
   /**
-   * @enum {number}
-   */
-  var KeyCodes = {
-    ESC_KEYCODE: 27,
-    ENTER_KEYCODE: 13
-  };
-
-  var isEscEvent = function (evt, action) {
-    if (evt.keyCode === KeyCodes.ESC_KEYCODE) {
-      action();
-    }
-  };
-
-  var isEnterEvent = function (evt, action) {
-    if (evt.keyCode === KeyCodes.ENTER_KEYCODE) {
-      action();
-    }
-  };
-
-  /**
    * Функция получения случайного элемента массива
    * @param {Array} arrayElements
    * @return {*}
@@ -48,8 +28,6 @@
   };
 
   window.utils = {
-    isEscEvent: isEscEvent,
-    isEnterEvent: isEnterEvent,
     getRandomElement: getRandomElement,
     shuffleElements: shuffleElements
   };
