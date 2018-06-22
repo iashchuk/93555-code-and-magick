@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var setupForm = document.querySelector('.setup-wizard-form');
-  var userNameInput = setupForm.querySelector('.setup-user-name');
+  var form = document.querySelector('.setup-wizard-form');
+  var userNameInput = form.querySelector('.setup-user-name');
 
   /**
    * Функция валидации поля ввода имени пользователя
@@ -45,10 +45,19 @@
     userNameInput.removeEventListener('input', resetInvalidInput);
   };
 
+  var submitHandler = function () {
+    form.addEventListener('submit', function (evt) {
+      window.backend.save(new FormData(form), function () {
+        document.querySelector('.setup').classList.add('hidden');
+      }, window.page.error);
+      evt.preventDefault();
+    });
+  };
 
   window.form = {
     init: initForm,
-    deactivate: deactivateForm
+    deactivate: deactivateForm,
+    submit: submitHandler
   };
 
 })();

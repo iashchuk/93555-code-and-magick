@@ -2,18 +2,43 @@
 
 (function () {
 
+  var page = document.querySelector('.setup');
+  var similarListElement = page.querySelector('.setup-similar-list');
+
+  var successHandler = function (wizards) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < 4; i++) {
+      fragment.appendChild(window.wizard.renderWizard(wizards[i]));
+    }
+    similarListElement.appendChild(fragment);
+
+    page.querySelector('.setup-similar').classList.remove('hidden');
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
   /**
    * Функция инициализации страницы
-   * @param {Node} fragment
    */
-  var initPage = function (fragment) {
-    var page = document.querySelector('.setup');
-    page.querySelector('.setup-similar').classList.remove('hidden');
-    page.querySelector('.setup-similar-list').appendChild(fragment);
+  var initPage = function () {
+    window.backend.load(successHandler, errorHandler);
     window.popup.init();
   };
 
-  // Создаем волшебников и инициализируем страницу
-  initPage(window.wizard.create);
+  initPage();
+
+  window.page = {
+    error: errorHandler
+  };
 
 })();
