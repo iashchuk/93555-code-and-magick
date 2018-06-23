@@ -36,28 +36,30 @@
   };
 
   var initForm = function () {
+    form.addEventListener('submit', onFormSubmit);
     userNameInput.addEventListener('click', setupValidUserName);
     userNameInput.addEventListener('input', resetInvalidInput);
   };
 
   var deactivateForm = function () {
+    form.removeEventListener('submit', onFormSubmit);
     userNameInput.removeEventListener('click', setupValidUserName);
     userNameInput.removeEventListener('input', resetInvalidInput);
   };
 
-  var submitHandler = function () {
-    form.addEventListener('submit', function (evt) {
-      window.backend.save(new FormData(form), function () {
-        document.querySelector('.setup').classList.add('hidden');
-      }, window.page.error);
-      evt.preventDefault();
-    });
+  var onLoadSuccess = function () {
+    document.querySelector('.setup').classList.add('hidden');
   };
+
+  var onFormSubmit = function (evt) {
+    window.backend.save(new FormData(form), onLoadSuccess, window.page.error);
+    evt.preventDefault();
+  };
+
 
   window.form = {
     init: initForm,
-    deactivate: deactivateForm,
-    submit: submitHandler
+    deactivate: deactivateForm
   };
 
 })();

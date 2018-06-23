@@ -64,7 +64,6 @@
     setupClose.addEventListener('keydown', onPopupCloseEnterPress);
     window.wizard.setHandlers();
     window.form.init();
-    window.form.submit();
   };
 
   var initPopup = function () {
