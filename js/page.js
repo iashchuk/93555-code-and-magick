@@ -4,10 +4,11 @@
 
   var page = document.querySelector('.setup');
   var similarListElement = page.querySelector('.setup-similar-list');
+  var LOAD_WIZARDS = 4;
 
   var successHandler = function (wizards) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < LOAD_WIZARDS; i++) {
       fragment.appendChild(window.wizard.renderWizard(wizards[i]));
     }
     similarListElement.appendChild(fragment);
@@ -38,7 +39,7 @@
   initPage();
 
   window.page = {
-    error: errorHandler
+    errorHandler: errorHandler
   };
 
 })();
