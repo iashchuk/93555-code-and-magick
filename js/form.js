@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var setupForm = document.querySelector('.setup-wizard-form');
-  var userNameInput = setupForm.querySelector('.setup-user-name');
+  var form = document.querySelector('.setup-wizard-form');
+  var userNameInput = form.querySelector('.setup-user-name');
 
   /**
    * Функция валидации поля ввода имени пользователя
@@ -36,13 +36,24 @@
   };
 
   var initForm = function () {
+    form.addEventListener('submit', onFormSubmit);
     userNameInput.addEventListener('click', setupValidUserName);
     userNameInput.addEventListener('input', resetInvalidInput);
   };
 
   var deactivateForm = function () {
+    form.removeEventListener('submit', onFormSubmit);
     userNameInput.removeEventListener('click', setupValidUserName);
     userNameInput.removeEventListener('input', resetInvalidInput);
+  };
+
+  var onLoadSuccess = function () {
+    document.querySelector('.setup').classList.add('hidden');
+  };
+
+  var onFormSubmit = function (evt) {
+    window.backend.save(new FormData(form), onLoadSuccess, window.page.errorHandler);
+    evt.preventDefault();
   };
 
 

@@ -56,8 +56,8 @@
   var getWizard = function (name, surname, coatColor, eyesColor) {
     var wizard = {
       name: name + ' ' + surname,
-      coatColor: coatColor,
-      eyesColor: eyesColor
+      colorCoat: coatColor,
+      colorEyes: eyesColor
     };
     return wizard;
   };
@@ -66,14 +66,14 @@
    * Функция создания волшебников
    * @param {Object} dataWizard
    * @param {number} quantityWizards - необходимое количество волшебников
-   * @return {Node}
+   * @return {Array.<Object>}
    */
   var createWizards = function (dataWizard, quantityWizards) {
-    var fragment = document.createDocumentFragment();
     var shuffleNames = window.utils.shuffleElements(dataWizard.NAMES);
     var shuffleSurnames = window.utils.shuffleElements(dataWizard.SURNAMES);
     var shuffleCoatColors = window.utils.shuffleElements(dataWizard.COAT_COLORS);
     var shuffleEyesColors = window.utils.shuffleElements(dataWizard.EYES_COLORS);
+    var randomWizards = [];
 
     for (var i = 0; i < quantityWizards; i++) {
       var newWizard = getWizard(
@@ -82,9 +82,9 @@
           shuffleCoatColors[i],
           shuffleEyesColors[i]
       );
-      fragment.appendChild(renderWizard(newWizard));
+      randomWizards.push(newWizard);
     }
-    return fragment;
+    return randomWizards;
   };
 
   /**
@@ -95,8 +95,8 @@
   var renderWizard = function (wizard) {
     var wizardElement = similarWizardTemplate.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
 
     return wizardElement;
   };
@@ -156,7 +156,8 @@
 
 
   window.wizard = {
-    create: createWizards(caseWizard, NUMBER_WIZARDS),
+    random: createWizards(caseWizard, NUMBER_WIZARDS),
+    renderWizard: renderWizard,
     setHandlers: initChangeColor,
     removeHandlers: deactivateChangeColor
   };
