@@ -1,6 +1,6 @@
-// Файл similar.js
 'use strict';
 (function () {
+
   var COAT_COLORS = [
     'rgb(146, 100, 161)',
     'rgb(215, 210, 55)',
@@ -32,53 +32,41 @@
 
   var getRank = function (wizard) {
     var rank = 0;
-
     if (wizard.colorCoat === coatColor) {
       rank += 2;
     }
     if (wizard.colorEyes === eyesColor) {
       rank += 1;
     }
-
     return rank;
   };
 
-  var namesComparator = function (left, right) {
-    if (left > right) {
-      return 1;
-    } else if (left < right) {
-      return -1;
-    } else {
-      return 0;
-    }
-  };
-
   var updateWizards = function () {
-    window.render(wizards.sort(function (left, right) {
+    window.render(wizards.slice().sort(function (left, right) {
       var rankDiff = getRank(right) - getRank(left);
       if (rankDiff === 0) {
-        rankDiff = namesComparator(left.name, right.name);
+        rankDiff = wizards.indexOf(left) - wizards.indexOf(right);
       }
       return rankDiff;
     }));
   };
 
-  var onCoatChangeClick = function () {
+  var wizardCoatClickHandler = function () {
     setupWizardCoat.addEventListener('click', function (evt) {
       var newColor = window.utils.getRandomElement(COAT_COLORS);
       evt.target.style.fill = newColor;
       coatColor = newColor;
-      updateWizards();
+      window.debounce(updateWizards);
     });
   };
 
 
-  var onEyesChangeClick = function () {
+  var wizardEyesClickHandler = function () {
     setupWizardEyes.addEventListener('click', function (evt) {
       var newColor = window.utils.getRandomElement(EYES_COLORS);
       evt.target.style.fill = newColor;
       eyesColor = newColor;
-      updateWizards();
+      window.debounce(updateWizards);
     });
   };
 
@@ -99,22 +87,23 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  window.backend.load(successHandler, errorHandler);
-
-  /**
-   * Функция инициализации страницы
-   */
-  var initSimilar = function () {
-    window.backend.load(successHandler, errorHandler);
-    window.popup.init();
-    onEyesChangeClick();
-    onCoatChangeClick();
+  var initChangeColor = function () {
+    setupWizardCoat.addEventListener('click', wizardCoatClickHandler);
+    setupWizardEyes.addEventListener('click', wizardEyesClickHandler);
   };
 
-  initSimilar();
+  var deactivateChangeColor = function () {
+    setupWizardCoat.removeEventListener('click', wizardCoatClickHandler);
+    setupWizardEyes.removeEventListener('click', wizardEyesClickHandler);
+  };
 
-  window.similar = {
-    errorHandler: errorHandler
+  window.backend.load(successHandler, errorHandler);
+
+
+  window.similarWizards = {
+    errorHandler: errorHandler,
+    setHandlers: initChangeColor,
+    removeHandlers: deactivateChangeColor
   };
 
 })();

@@ -35,7 +35,6 @@
     FIREBALL_COLORS: ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848']
   };
 
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
   var setupPlayer = document.querySelector('.setup-player');
   var setupWizardCoat = setupPlayer.querySelector('.wizard-coat');
   var wizardCoatInput = setupPlayer.querySelector('[name=coat-color]');
@@ -88,21 +87,6 @@
   };
 
   /**
-   * Функция отрисовки волшебников на основе шаблона
-   * @param {Object} wizard
-   * @return {Node}
-   */
-  var renderWizard = function (wizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
-    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
-
-    return wizardElement;
-  };
-
-
-  /**
  * Функция задания цвета элементу и значения в input
  * @param {Node} element
  * @param {Array.<string>} color
@@ -153,8 +137,7 @@
   };
 
 
-  window.wizard = {
-    render: renderWizard,
+  window.randomWizards = {
     random: createWizards(caseWizard, NUMBER_WIZARDS),
     setHandlers: initChangeColor,
     removeHandlers: deactivateChangeColor

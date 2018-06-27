@@ -3,6 +3,7 @@
 (function () {
 
   var wizardTemplate = document.querySelector('#similar-wizard-template');
+  var LOAD_WIZARDS = 4;
 
   var renderWizard = function (wizard) {
     var element = wizardTemplate.content.cloneNode(true);
@@ -17,7 +18,7 @@
   var similarList = document.querySelector('.setup-similar-list');
 
   window.render = function (data) {
-    var takeNumber = data.length > 4 ? 4 : data.length;
+    var takeNumber = data.length > LOAD_WIZARDS ? LOAD_WIZARDS : data.length;
     similarList.innerHTML = '';
     for (var i = 0; i < takeNumber; i++) {
       similarList.appendChild(renderWizard(data[i]));

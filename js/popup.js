@@ -52,7 +52,7 @@
     document.removeEventListener('keydown', onPopupEscPress);
     setupClose.removeEventListener('keydown', onPopupCloseEnterPress);
     window.form.deactivate();
-    // window.wizard.removeHandlers();
+    window.similarWizards.removeHandlers();
 
     setup.style = null;
   };
@@ -63,7 +63,7 @@
     document.addEventListener('keydown', onPopupEscPress);
     setupClose.addEventListener('click', onPopupCloseClick);
     setupClose.addEventListener('keydown', onPopupCloseEnterPress);
-    // window.wizard.setHandlers();
+    window.similarWizards.setHandlers();
 
     window.form.init();
   };
@@ -73,9 +73,6 @@
     setupOpen.addEventListener('keydown', onPopupOpenEnterPress);
   };
 
-
-  window.popup = {
-    init: initPopup
-  };
+  initPopup();
 
 })();
