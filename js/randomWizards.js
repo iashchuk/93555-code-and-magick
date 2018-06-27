@@ -101,6 +101,7 @@
     return wizardElement;
   };
 
+
   /**
  * Функция задания цвета элементу и значения в input
  * @param {Node} element
@@ -124,7 +125,7 @@
   };
 
 
-  // Сменаа цвета плаща по клике по нему
+  // Смена цвета плаща по клике по нему
   var wizardCoatClickHandler = function () {
     selectElementColor(setupWizardCoat, caseWizard.COAT_COLORS, wizardCoatInput);
   };
@@ -153,8 +154,8 @@
 
 
   window.wizard = {
-    random: createWizards(caseWizard, NUMBER_WIZARDS),
     render: renderWizard,
+    random: createWizards(caseWizard, NUMBER_WIZARDS),
     setHandlers: initChangeColor,
     removeHandlers: deactivateChangeColor
   };
