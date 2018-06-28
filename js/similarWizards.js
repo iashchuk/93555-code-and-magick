@@ -51,24 +51,24 @@
     }));
   };
 
-  var wizardCoatClickHandler = function () {
+  var wizardCoatClickHandler = window.debounce(function () {
     setupWizardCoat.addEventListener('click', function (evt) {
       var newColor = window.utils.getRandomElement(COAT_COLORS);
       evt.target.style.fill = newColor;
       coatColor = newColor;
-      window.debounce(updateWizards);
     });
-  };
+    updateWizards();
+  });
 
 
-  var wizardEyesClickHandler = function () {
+  var wizardEyesClickHandler = window.debounce(function () {
     setupWizardEyes.addEventListener('click', function (evt) {
       var newColor = window.utils.getRandomElement(EYES_COLORS);
       evt.target.style.fill = newColor;
       eyesColor = newColor;
-      window.debounce(updateWizards);
     });
-  };
+    updateWizards();
+  });
 
   var successHandler = function (data) {
     wizards = data;
