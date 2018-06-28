@@ -52,7 +52,7 @@
   };
 
   var onFormSubmit = function (evt) {
-    window.backend.save(new FormData(form), onLoadSuccess, window.page.errorHandler);
+    window.backend.save(new FormData(form), onLoadSuccess, window.similarWizards.errorHandler);
     evt.preventDefault();
   };
 
