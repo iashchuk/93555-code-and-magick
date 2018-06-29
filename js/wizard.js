@@ -4,7 +4,6 @@
 
   var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
-
   /**
    * Функция отрисовки волшебников на основе шаблона
    * @param {Object} wizard

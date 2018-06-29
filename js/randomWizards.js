@@ -2,6 +2,8 @@
 
 (function () {
 
+  var NUMBER_WIZARDS = 4;
+
   var caseWizard = {
     NAMES: [
       'Иван',
@@ -42,7 +44,6 @@
   var wizardEyesInput = setupPlayer.querySelector('[name=eyes-color]');
   var setupWizardFireball = setupPlayer.querySelector('.setup-fireball-wrap');
   var wizardFireballInput = setupWizardFireball.querySelector('[name=fireball-color]');
-  var NUMBER_WIZARDS = 4;
 
   /**
    * Функция создания волшебника
