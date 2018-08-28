@@ -2,8 +2,8 @@
 'use strict';
 (function () {
 
-  var wizardTemplate = document.querySelector('#similar-wizard-template');
   var LOAD_WIZARDS = 4;
+  var wizardTemplate = document.querySelector('#similar-wizard-template');
 
   var renderWizard = function (wizard) {
     var element = wizardTemplate.content.cloneNode(true);
